@@ -14,6 +14,7 @@ import io
 import binascii
 
 import asets.ffmpeg_tool
+import asets.dict
 
 try:
     from vosk import Model, KaldiRecognizer
