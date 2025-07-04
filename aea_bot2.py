@@ -18,7 +18,7 @@ import asets.dict
 
 try:
     from vosk import Model, KaldiRecognizer
-    import telebot
+    import telebot 
     from telebot import types
     from telebot.types import InlineKeyboardButton
     from telebot import formatting , util
@@ -70,15 +70,15 @@ except FileNotFoundError:
     sys.exit(1)
     
 def umsettings():
-    global bambam,DELET_MESSADGE,admin_grops,SPAM_LIMIT,SPAM_TIMEFRAME,BAN_AND_MYTE_COMMAND,CONSOLE_CONTROL
-    bambam=False
+    global BAMBAM,DELET_MESSADGE,admin_grops,SPAM_LIMIT,SPAM_TIMEFRAME,BAN_AND_MYTE_COMMAND,CONSOLE_CONTROL,AUTO_TRANSLETE
+    BAMBAM=False
     DELET_MESSADGE=True
     admin_grops="-1002284704738"
     SPAM_LIMIT = 10 # Максимальное количество сообщений
     SPAM_TIMEFRAME = 4  # Время в секундах для отслеживания спама
     BAN_AND_MYTE_COMMAND = True
     CONSOLE_CONTROL = False
-    AUTO_TRANSLETE = False
+    AUTO_TRANSLETE = {"laung":"ru","Activate":False}
 
 try:
     with open("settings.json", "r") as json_settings:
@@ -98,7 +98,7 @@ random.seed(round(time.time())+int(round(psutil.virtual_memory().percent)))#со
 # Инициализация логирования
 logger.add("cats_message.log", level="TRACE", encoding='utf-8', rotation="500 MB")
 try:
-    bambam=bool(settings['bambam'])
+    BAMBAM=bool(settings['bambam'])
     DELET_MESSADGE=bool(settings['delet_messadge'])
     admin_grops=str(settings['admin_grops'])
     SPAM_LIMIT=int(settings['spam_limit'])
@@ -413,7 +413,7 @@ def configfile(message):
                 with open("settings.json", "r") as json_settings:
                     settings= json.load(json_settings)
                 try:
-                    bambam=bool(settings['bambam'])
+                    BAMBAM=bool(settings['BAMBAM'])
                     DELET_MESSADGE=bool(settings['delet_messadge'])
                     admin_grops=str(settings['admin_grops'])
                     SPAM_LIMIT=int(settings['spam_limit'])
@@ -704,7 +704,7 @@ def handle_warn(message):
             logger.info(f"Пользователь @{message.from_user.username} понизил репутацию @{message.reply_to_message.from_user.username} ") 
         
         # Проверяем, достаточно ли маленькая репутация для мута
-            if bambam==True:
+            if BAMBAM==True:
                 if reputation <= 0:
                     #Ограничиваем пользователя на 24 часа 
                     bot.restrict_chat_member(
@@ -787,7 +787,7 @@ def handle_goida(message):
         elif rand==3:bot.reply_to(message,'держи гойду')
         elif rand==4:bot.send_photo(message.chat.id,io.BytesIO(requests.get('https://soski.tv/images/thumbnails/76828318.jpg').content),reply_to_message_id=message.message_id)
         
-@bot.message_handler(commands=['bambambam'])
+@bot.message_handler(commands=['BAMBAMbam'])
 def handle_warn(message):
     if time.time() - message.date >= 60:
         return
@@ -1247,7 +1247,7 @@ def nacase(message, delete_message=None):
         user_messages[message.from_user.id] = []
         the_message = str(message.chat.id).replace("-100", "")
         
-        if bool(bambam): 
+        if bool(BAMBAM): 
             # Ограничиваем пользователя на 24 часа
             bot.restrict_chat_member(
                 chat_id=message.chat.id,
@@ -1459,11 +1459,11 @@ def anti_spam(message):
                     text = str(list_mess[a])[cours:cours + paket_num]
                     list_povt_slov.append(text)
                     cours += paket_num
-                bambamSpamerBlat=0
+                BAMBAMSpamerBlat=0
                 for b in range(len(list_povt_slov)):
                     if list_povt_slov[b]==list_povt_slov[0]:
-                        bambamSpamerBlat=bambamSpamerBlat+1
-                if bambamSpamerBlat>SPAM_LIMIT:
+                        BAMBAMSpamerBlat=BAMBAMSpamerBlat+1
+                if BAMBAMSpamerBlat>SPAM_LIMIT:
                     keys_to_delete.append(list(user_text.keys())[i])
                     nacase(message,[message.message.id])
         #print(list_povt_slov)# debug
@@ -1547,13 +1547,13 @@ def message_voice(message):
     elif message.forward_from:
         anti_spam_forward(message)
         if message.voice.duration>=300:
-            bot.reply_to(message,'чет как то многовато')
+            bot.reply_to(message,'ааааа ГС страшно...')
         elif message.voice.duration>=1800:
             bot.reply_to(message,'скока бл ...ужас')
     else:
         anti_spam(message)
         if message.voice.duration>=300:
-            bot.reply_to(message,'чет как то многовато')
+            bot.reply_to(message,'ааааа ГС страшно...')
         elif message.voice.duration>=1800:
             bot.reply_to(message,'скока бл ...ужас')
 # Обработчик всех остальных типов сообщений
